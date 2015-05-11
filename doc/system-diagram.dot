@@ -1,0 +1,58 @@
+digraph G {
+  fontsize=12;
+  fontname="Arial";
+  node [fontsize=10, fontname="Arial", shape=square]
+  splines=ortho;
+  rankdir="TB";
+  compound=true;
+  subgraph cluster_0 {
+    style=rounded;
+    rank=same;
+    M1 [label=<M<SUB>1</SUB>>]
+    M2 [label=<M<SUB>2</SUB>>]
+    M3 [label=<M<SUB>3</SUB>>]
+    M1 -> {M2 M3} [arrowhead=none]
+    M2 -> M3 [arrowhead=none]
+    label = "Master Nodes";
+  }
+
+  subgraph cluster_1 {
+    style=rounded;
+    B1 [label="Primary"];
+    B2 [label="Aux"];
+    B1 -> B2
+    label = "Load Balancers"
+  }
+
+  subgraph cluster_2 {
+    style=rounded;
+    W3 [label="..."]
+    W1 [label=<W<SUB>1</SUB>>]
+    W2 [label=<W<SUB>2</SUB>>]
+    W4 [label=<W<SUB>n</SUB>>]
+    W1 -> W2 -> W3 -> W4 [style=invis];
+    label = "Workers"
+  }
+
+  subgraph cluster_3 {
+    style=rounded;
+    D1 [label="Primary"];
+    D2 [label="Aux"];
+    D1 -> D2
+    label = "Storage Nodes"
+  }
+
+  M1 -> B1 [ltail=cluster_0, constraint=false];
+
+  M1 -> D1 [ltail=cluster_0; lhead=cluster_3, constraint=false]
+
+  B1 -> {W1, W2, W4}
+  D1 -> {W1, W2, W4}
+
+  M1 -> {D1, D2} [style=invis]
+  M2 -> {D1, D2} [style=invis]
+  M3 -> {D1, D2} [style=invis]
+
+  C1 [label="Client"]
+  C1 -> M1 [lhead=cluster_0, constraint=false, minlen=2]
+}
