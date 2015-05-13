@@ -3,7 +3,7 @@ digraph G {
   fontname="Arial";
   node [fontsize=10, fontname="Arial", shape=square]
   splines=ortho;
-  rankdir="TB";
+  rankdir="LR";
   compound=true;
   subgraph cluster_0 {
     style=rounded;
@@ -14,14 +14,6 @@ digraph G {
     M1 -> {M2 M3} [arrowhead=none]
     M2 -> M3 [arrowhead=none]
     label = "Master Nodes";
-  }
-
-  subgraph cluster_1 {
-    style=rounded;
-    B1 [label="Primary"];
-    B2 [label="Aux"];
-    B1 -> B2
-    label = "Load Balancers"
   }
 
   subgraph cluster_2 {
@@ -42,11 +34,9 @@ digraph G {
     label = "Storage Nodes"
   }
 
-  M1 -> B1 [ltail=cluster_0, constraint=false];
-
+  M1 -> W1 [ltail=cluster_0; lhead=cluster_2]
   M1 -> D1 [ltail=cluster_0; lhead=cluster_3, constraint=false]
 
-  B1 -> {W1, W2, W4}
   D1 -> {W1, W2, W4}
 
   M1 -> {D1, D2} [style=invis]
@@ -55,4 +45,5 @@ digraph G {
 
   C1 [label="Client"]
   C1 -> M1 [lhead=cluster_0, constraint=false, minlen=2]
+  C1 -> D1 [lhead=cluster_3, constraint=false, minlen=2]
 }
